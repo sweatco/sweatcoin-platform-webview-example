@@ -14,9 +14,13 @@ import {
 import {WebView} from 'react-native-webview';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import Clipboard from '@react-native-community/clipboard';
+import useAppState from 'react-native-appstate-hook';
 
 const App = () => {
   const webviewRef = useRef(null);
+
+  useAppState({onForeground: reloadData});
+
   return (
     <>
       {/* Make sure to setup StatusBar to `dark-content` otherwise it might be white
