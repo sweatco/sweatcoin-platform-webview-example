@@ -15,11 +15,13 @@ import {WebView} from 'react-native-webview';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import Clipboard from '@react-native-community/clipboard';
 import useAppState from 'react-native-appstate-hook';
+import useKeepAlive from './hooks/useKeepAlive';
 
 const App = () => {
   const webviewRef = useRef(null);
+  const [checkAlive, consumeAlive] = useKeepAlive(webviewRef);
 
-  useAppState({onForeground: reloadData});
+  useAppState({onForeground: handleForeground});
 
   return (
     <>
@@ -62,6 +64,8 @@ const App = () => {
   function handleMessage(synteticEvent) {
     const {nativeEvent} = synteticEvent;
     const action = JSON.parse(nativeEvent.data);
+    consumeAlive(action);
+
     switch (action.type) {
       case 'SWC.COPY_CODE':
         Clipboard.setString(action.payload);
@@ -76,6 +80,11 @@ const App = () => {
         alert('TODO: hide current screen');
         break;
     }
+  }
+
+  function handleForeground() {
+    reloadData();
+    checkAlive();
   }
 
   function reloadWebview() {
