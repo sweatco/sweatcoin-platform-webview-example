@@ -31,7 +31,7 @@ const App = () => {
       <WebView
         ref={webviewRef}
         source={{
-          uri: 'https://platform.sweatco.in/webview/marketplace',
+          uri: 'https://platform.sweatco.in/webview/',
           headers: {
             'Authentication-Token': 'user token here',
           },
