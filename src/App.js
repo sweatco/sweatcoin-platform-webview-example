@@ -3,13 +3,15 @@
  * https://github.com/sweatco/sweatcoin-platform-webview-example
  */
 
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   StatusBar,
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
+  Alert,
+  Platform,
 } from 'react-native';
 import {WebView} from 'react-native-webview';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
@@ -19,6 +21,7 @@ import useKeepAlive from './hooks/useKeepAlive';
 
 const App = () => {
   const webviewRef = useRef(null);
+  const [token, setToken] = useState('user token here');
   const [checkAlive, consumeAlive] = useKeepAlive(webviewRef);
 
   useAppState({onForeground: handleForeground});
@@ -38,11 +41,12 @@ const App = () => {
         backgroundColor="white"
       />
       <WebView
+        key={token || 'undefined'}
         ref={webviewRef}
         source={{
           uri: 'https://platform.sweatco.in/webview/',
           headers: {
-            'Authentication-Token': 'user token here',
+            'Authentication-Token': token,
           },
         }}
         /* Reflect your actual AppName and your current build number, which should increment
@@ -64,8 +68,13 @@ const App = () => {
           <Text style={styles.actionBarButton}>Reload Data</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={reloadWebview}>
-          <Text style={styles.actionBarButton}>Force WebView</Text>
+          <Text style={styles.actionBarButton}>Reload Webview</Text>
         </TouchableOpacity>
+        {Platform.OS === 'ios' ? (
+          <TouchableOpacity onPress={promptToken}>
+            <Text style={styles.actionBarButton}>Set Token</Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </>
   );
@@ -111,6 +120,12 @@ const App = () => {
         }),
       );
     }
+  }
+
+  function promptToken() {
+    Alert.prompt('Enter new auth token', null, newToken => {
+      setToken(newToken);
+    });
   }
 };
 
