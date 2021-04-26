@@ -26,8 +26,17 @@ const App = () => {
   return (
     <>
       {/* Make sure to setup StatusBar to `dark-content` otherwise it might be white
-       * when user uses dark layout on his device */}
-      <StatusBar barStyle={'dark-content'} />
+       * when user uses dark layout on his device
+       *
+       * Apr 22, 2021 Android note: Android doesn't support or report 0 for safe-area-inset
+       * css env which prevents us to use translucent status bar, to overcome this issue
+       * we have to setup translucent and backgroundColor as in example below
+       **/}
+      <StatusBar
+        translucent={false}
+        barStyle="dark-content"
+        backgroundColor="white"
+      />
       <WebView
         ref={webviewRef}
         source={{
