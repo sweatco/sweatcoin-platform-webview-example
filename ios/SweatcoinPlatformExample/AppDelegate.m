@@ -4,6 +4,8 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
+#import "SweatcoinPlatformExample-Swift.h"
+
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
 #import <FlipperKitLayoutPlugin/FlipperKitLayoutPlugin.h>
@@ -23,10 +25,13 @@ static void InitializeFlipper(UIApplication *application) {
 }
 #endif
 
+#define USE_NATIVE 1
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+#if !USE_NATIVE
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
@@ -41,10 +46,15 @@ static void InitializeFlipper(UIApplication *application) {
   } else {
       rootView.backgroundColor = [UIColor whiteColor];
   }
-
+#endif
+  
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+#if USE_NATIVE
+  UIViewController *rootViewController = [WebViewController new];
+#else
   UIViewController *rootViewController = [UIViewController new];
   rootViewController.view = rootView;
+#endif
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   return YES;
