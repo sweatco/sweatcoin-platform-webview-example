@@ -13,6 +13,12 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
   static let MessageHandlerName = "MessageHandler"
   
   var webView: WKWebView!
+  
+  @available(iOS 12.0, *)
+  lazy var appearance: UIUserInterfaceStyle? = {
+    // NOTE: If your app is able to override system's interface style, you should adapt this code and traitCollectionDidChange to reflect that
+    return UIScreen.main.traitCollection.userInterfaceStyle
+  }()
 
   override func loadView() {
     let buildNumber: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
@@ -35,12 +41,31 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+    loadWebView()
+  }
+  
+  func loadWebView() {
     let myURL = URL(string:"https://platform.sweatco.in/webview/")
+
     var myRequest = URLRequest(url: myURL!)
     myRequest.addValue("{user's token here}", forHTTPHeaderField: "Authentication-Token")
 
+    if #available(iOS 12.0, *) {
+      myRequest.addValue(appearance == .dark ? "dark" : "light", forHTTPHeaderField: "Application-Appearance")
+    }
+
     webView.load(myRequest)
+  }
+  
+  // MARK: Appearance
+  
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    if #available(iOS 12.0, *) {
+      if appearance != UIScreen.main.traitCollection.userInterfaceStyle {
+        appearance = UIScreen.main.traitCollection.userInterfaceStyle
+        loadWebView()
+      }
+    }
   }
   
   // MARK: WKNavigationDelegate methods
