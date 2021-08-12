@@ -27,7 +27,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKScriptMessageHandler,
     userController.add(self, name: WebViewController.MessageHandlerName)
     
     let webConfiguration = WKWebViewConfiguration()
-    webConfiguration.applicationNameForUserAgent = "\(webConfiguration.applicationNameForUserAgent ?? "") AppName/\(buildNumber))"
+    webConfiguration.applicationNameForUserAgent = "\(webConfiguration.applicationNameForUserAgent ?? "") AppName/\(buildNumber)"
     webConfiguration.userContentController = userController
     
     webView = WKWebView(frame: .zero, configuration: webConfiguration)
